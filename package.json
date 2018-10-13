@@ -1,0 +1,28 @@
+{
+  "name": "orgi",
+  "version": "1.0.0",
+  "description": "Your personal organiser",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amirsaleem-kn/orgi.git"
+  },
+  "keywords": [
+    "workspace",
+    "organiser",
+    "task",
+    "manager",
+    "planner"
+  ],
+  "author": "Amir Saleem",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amirsaleem-kn/orgi/issues"
+  },
+  "homepage": "https://github.com/amirsaleem-kn/orgi#readme"
+}
