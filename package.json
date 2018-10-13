@@ -4,7 +4,13 @@
   "description": "Your personal organiser",
   "main": "index.js",
   "dependencies": {
-    "express": "^4.16.4"
+    "body-parser": "^1.18.3",
+    "compression": "^1.7.3",
+    "express": "^4.16.3",
+    "express-rate-limit": "^3.2.0",
+    "jsonwebtoken": "^8.3.0",
+    "mongoose": "^5.2.17",
+    "typescript": "^3.0.3"
   },
   "devDependencies": {},
   "scripts": {
