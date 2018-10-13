@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Your personal organiser",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "express": "^4.16.4"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "npm run test"
