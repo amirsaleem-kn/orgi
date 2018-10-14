@@ -1,5 +1,11 @@
 const app = require('../core/App');
+const bodyParser = require('body-parser');
+const compression = require('compression');
 const { Logger, Debugger } = require('../etc/logs/logger');
+
+/**
+ * @description external middlewares
+ */
 
 app.use(bodyParser.json({ limit: '50mb' }))
 app.use(bodyParser.urlencoded({ "limit": "50mb", extended: true, parameterLimit: 1000000 }))
@@ -21,15 +27,9 @@ app.use(function(req, res, next) {
  */
 
 app.use(function(req, res, next){
-    // any error in this function should not be fatal
+    // any error in this function must not be fatal
     try {
         Debugger.fancy(`[${req.method}]${req.originalUrl}`);
-        // Debugger.log(`[HEADERS]: ${JSON.stringify(req.headers)}`);
-        // Debugger.log(`[QUERY]: ${JSON.stringify(req.query)}`);
-        // Debugger.log(`[PARAMS]: ${JSON.stringify(req.params)}`);
-        // if(req.method != 'GET' && req.method != 'OPTIONS') {
-        //     Debugger.log(`[BODY]: ${JSON.stringify(req.body)}`);
-        // }
     } catch (e) {
         Logger.error(e);
     }

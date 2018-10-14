@@ -1,10 +1,11 @@
 const app = require('./core/App');
-const PORT = process.env.PORT || 8080;
+const { Debugger, Logger } = require('./etc/logs/logger');
+const PORT = process.env.PORT || 5000;
 
 require('./middlewares');
 require('./public/routes');
-const { Debugger, Logger } = require('./etc/logs/logger');
 
 app.listen(PORT, () => {
+    Logger.log('[Server Started]');
     Debugger.fancy(`Server listening to port: ${PORT}`);
 });
