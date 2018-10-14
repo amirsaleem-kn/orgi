@@ -3,7 +3,7 @@ const { expect, assert, should } = require('chai');
 
 // module to test
 const helper_functions = require('../../lib/common/helper_functions.js');
-const { base64_encode, base64_decode } = helper_functions;
+const { base64_encode, base64_decode, cast_float } = helper_functions;
 
 describe('Helper Functions', function () {
     describe('base64_encode method', function(){
@@ -35,6 +35,27 @@ describe('Helper Functions', function () {
         });
         it('should return InRlc3Qi= when test is passed', function(){
             expect(base64_decode('InRlc3Qi=')).to.equal('"test"');
+        });
+    });
+    describe('cast_float method', function(){
+        it('should return 0 when no argument is passed', function(){
+            expect(cast_float()).to.equal(0);
+        });
+        it('should return 0 when any non number data type is passed except string containing numbers', function(){
+            expect(cast_float('some string')).to.equal(0);
+            expect(cast_float({})).to.equal(0);
+            expect(cast_float([])).to.equal(0);
+            expect(cast_float(NaN)).to.equal(0);
+            expect(cast_float(null)).to.equal(0);
+            expect(cast_float(undefined)).to.equal(0);
+        });
+        it('should return a number when string integer is passed', function(){
+            assert.typeOf(cast_float('5'), 'number');
+            expect(cast_float('5')).to.equal(5);
+        });
+        it('should return a number when string float is passed', function(){
+            assert.typeOf(cast_float('4.55'), 'number');
+            expect(cast_float('4.55')).to.equal(4.55);
         });
     });
 });
