@@ -9,6 +9,7 @@ const chalk = require('chalk');
 const { environment } = process.env;
 
 /**
+ * @author Amir Saleem
  * @description Debugger class used for debugging during development phase, nothing will be logged in the production environment
  * @method log this method prints the argument passed in the console
  * @method fancy this method prints the argument passed in a blue colored font

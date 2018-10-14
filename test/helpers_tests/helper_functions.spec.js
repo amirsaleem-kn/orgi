@@ -5,6 +5,8 @@ const { expect, assert, should } = require('chai');
 const helper_functions = require('../../lib/common/helper_functions.js');
 const { base64_encode, base64_decode, cast_float } = helper_functions;
 
+// [start] test
+
 describe('Helper Functions', function () {
     describe('base64_encode method', function(){
         it('should return null when no argument is passed', function(){

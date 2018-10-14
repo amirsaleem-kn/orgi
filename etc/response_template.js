@@ -1,15 +1,34 @@
+/**
+ * @description this file contains the logic for sending Response to the client
+ */
+
 const helper_functions = require('../lib/common/helper_functions');
 const { base64_decode, base64_encode } = helper_functions;
+
+// an object containing API health check
 
 var api_status = {
     status: "stable",
     health: "OK",
     version: "1.1.0"
 }
+
+// default response object
+
 var respons_object = {
     api: api_status,
     help: 'https://orgi.com/help'
 }
+
+/**
+ * @author Amir Saleem
+ * @description Response class used to send response messages to the clients
+ * @method success method to send successful response to the client with status code 200
+ * @method fail method to send fail response with status code 200
+ * @method notAuthorized method to send response with status code 401
+ * @method forbidden method to send response with status code 403
+ * @method missingParameters method to send response with status code 422
+ */
 
 class Response {
     static success (res, body) {
@@ -60,5 +79,7 @@ class Response {
         });
     }
 }
+
+// make the class accessible to rest of the code
 
 module.exports = Response;
