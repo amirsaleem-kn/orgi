@@ -12,7 +12,9 @@
     "mongoose": "^5.2.17",
     "typescript": "^3.0.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "chalk": "^2.4.1"
+  },
   "scripts": {
     "test": "npm run test"
   },

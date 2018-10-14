@@ -2,13 +2,9 @@ const app = require('./core/App');
 const PORT = process.env.PORT || 8080;
 
 require('./middlewares');
-
-app.get('/', function(req, res, next){
-    res.json({
-        status: "success"
-    })
-});
+require('./public/routes');
+const { Debugger, Logger } = require('./etc/logs/logger');
 
 app.listen(PORT, () => {
-    console.log(`Server listening to port ${PORT}`);
+    Debugger.fancy(`Server listening to port: ${PORT}`);
 });
