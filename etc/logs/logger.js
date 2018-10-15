@@ -56,10 +56,7 @@ class Debugger {
         if(environment != 'production') {
             var args = arguments;
             for (let i in arguments) {
-                return {
-                    warning: this.warning(arguments[i])
-                }
-                //console.log(arguments[i]);
+                console.log(arguments[i]);
             }
         }
     }

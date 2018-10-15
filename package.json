@@ -20,7 +20,7 @@
     "sinon": "^7.0.0"
   },
   "scripts": {
-    "test": "npm run test",
+    "test": "mocha ./test/**/*.spec.js",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
