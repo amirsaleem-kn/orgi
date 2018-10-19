@@ -10,7 +10,11 @@ const { base64_decode, base64_encode } = helper_functions;
 var api_status = {
     status: "stable",
     health: "OK",
-    version: "1.1.0"
+    version: "1.1.0",
+    worker: process.pid,
+    runtime: `NodeJS ${process.versions.node}`,
+    arch: process.arch,
+    platform: process.platform
 }
 
 // default response object
@@ -41,6 +45,16 @@ class Response {
         respons_object.status = 'fail';
         res.json(respons_object);
     }
+
+    static serviceError (res) {
+        respons_object.errors = [{
+            err_code: 503,
+            err_message: 'Internal Error'
+        }];
+        respons_object.status = 'fail';
+        res.status(503).json(respons_object)
+    }
+
     static notAuthorized (res) {
         respons_object.errors = [
             {
