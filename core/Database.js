@@ -1,16 +1,17 @@
 const mysql = require('mysql');
 const { Logger, Debugger } = require('../etc/logs/logger');
-const Response = require('../etc/response_template');
+const keys = require('../keys/keys');
 
+const Response = require('../etc/response_template');
 /**
  * @description mysql connection pool configuration
  */
 
 const pool = mysql.createPool({
-                user: 'b9082f69ccfec3',
-                password: 'a66e767d',
-                database: 'heroku_a7abf7a84c87407',
-                host: 'us-cdbr-iron-east-05.cleardb.net',
+                user: keys.mysql.user,
+                password: keys.mysql.password,
+                database: keys.mysql.database,
+                host: keys.mysql.host,
                 connectionTimeout: 2 * 60 * 1000,
                 timeout: 120000,
                 multipleStatements: true,
@@ -22,20 +23,25 @@ const pool = mysql.createPool({
  */
 
 const db = new function () {
-    // get an active connection from pool
-    this.getConnection = function (callback, res) {
-        Debugger.fancy('aquiring a connection from pool');
+    // retry should be implemented for following codes
+    const retryErrorCodes = ['PROTOCOL_CONNECTION_LOST', 'PROTOCOL_SEQUENCE_TIMEOUT'];
+    // get an active mysql connection from the pool
+    this.getConnection = function (callback, res, retryCount) {
         pool.getConnection((err, connection) => {
+            // if retry count is undefined, make it 0
+            retryCount ? retryCount = retryCount : retryCount = 0;
+            // check for any error during connection acquisiton
             if(err) {
-                Logger.log(err);
-                if(err.code == 'PROTOCOL_CONNECTION_LOST') {
-                    return this.getConnection(callback);
+                // should  retry
+                if(retryErrorCodes.indexOf(err.code) > -1 && retryCount < 3) {
+                    Debugger.fancy('Retrying due to '+err.code);
+                    retryCount += 1;
+                    return this.getConnection(callback, res, retryCount);
                 }
-                if(err) {
-                    handleError(err, res);
-                    callback(err);
-                    return;
-                }
+                // some other error has occurred, needs to handle and terminate the process
+                handleError(err, null, res);
+                callback(err);
+                return;
             }
             return callback(null, connection);
         });
@@ -44,7 +50,7 @@ const db = new function () {
     this.transactionService = function (connection, callback, res) {
         connection.beginTransaction((err) => {
             if(err) {
-                handleError(err, res);
+                handleError(err, connection, res);
                 callback(err);
                 return;
             }
@@ -54,7 +60,7 @@ const db = new function () {
     this.handleTransactionRollback = function (connection, callback, res) {
         connection.rollback((err) => {
             if(err) {
-                handleError(err);
+                handleError(err, connection, res);
                 callback(err);
                 return;
             }
@@ -65,7 +71,7 @@ const db = new function () {
     this.handleTransactionCommit = function (connection, callback, res) {
         connection.commit((err) => {
             if(err) {
-                handleError(err, res);
+                handleError(err, connection, res);
                 callback(err);
                 return;
             }
@@ -79,7 +85,7 @@ const db = new function () {
         }
         connection.query(query, queryArray, (err, rows) => {
             if(err) {
-                handleError(err, res);
+                handleError(err, connection, res);
                 callback(err);
                 return;
             }
@@ -90,7 +96,8 @@ const db = new function () {
 
 function handleError (err, connection, res) {
     Logger.log(err);
-    connection.release();
+    if(connection)
+        connection.release();
     if(res) {
         Response.serviceError(res);
     }
