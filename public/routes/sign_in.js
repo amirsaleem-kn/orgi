@@ -1,3 +1,8 @@
+/**
+ * @author Amir Saleem
+ * @description This file contains the sign-in logic
+ */
+
 const db = require('../../core/Database');
 const Response = require('../../etc/response_template');
 const Crypto = require('../../core/Crypto');
@@ -77,7 +82,6 @@ function signIn(req, res) {
  */
 
 function storeToken (connection, userID, token) {
-    Debugger.log('HERE HERE');
     return new Promise((resolve, reject) => {
         db.executeQuery({
             query: "INSERT INTO AccessToken(userID, token, expiry) values(?, ?, ?)",
@@ -85,11 +89,9 @@ function storeToken (connection, userID, token) {
             connection: connection
         }, function(err, result){
             if(err){
-                Debugger.log(err);
                 reject(err);
                 return;
             }
-            Debugger.log('resolving');
             resolve(result);
         });
     });   

@@ -1,9 +1,15 @@
+/**
+ * @author Amir Saleem
+ * @description this file contains cryptographic logic
+ */
+
 const crypto = require('crypto');
 const server_key = require('../keys/server_key');
 const algorithm = 'aes-256-ctr';
 
 /**
  * @description top level class to use cryptographic functions
+ * @static
  */
 
 class Crypto {
