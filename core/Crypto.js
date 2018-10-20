@@ -16,6 +16,19 @@ class Crypto {
         dec += decipher.final('utf8');
         return dec;
     }
+    static createSalt () {
+        return crypto.randomBytes(16).toString('hex');
+    }
+    static createHash (str, salt) {
+        return crypto.pbkdf2Sync(str, salt, 10000, 512, 'sha512').toString('hex');
+    }
+    static validateHash (str, salt, hashValue) {
+        const hash = this.createHash(str, salt);
+        return hash == hashValue;
+    }
+    static generateToken (str) {
+        return crypto.createHash('md5').update(str).digest('hex');
+    }
 }
 
 module.exports = Crypto;
