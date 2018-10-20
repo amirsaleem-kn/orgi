@@ -1,6 +1,7 @@
 node_modules
 keys/dev.js
 keys/prod.js
+keys/server_key.js
 dockerfile
 docker-compose.yml
 app.yaml
