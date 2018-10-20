@@ -1,5 +1,6 @@
 const app = require('../../core/App');
-var Response = require('../../etc/response_template');
+const Response = require('../../etc/response_template');
+const signIn = require('./sign_in');
 
 app.get('/', (req, res) => {
     Response.success(res, {
@@ -13,3 +14,5 @@ app.get('/', (req, res) => {
         }
     })
 });
+
+app.post('/sign-in', signIn);

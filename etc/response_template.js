@@ -36,7 +36,7 @@ var respons_object = {
 
 class Response {
     static success (res, body) {
-        respons_object.body = base64_encode(body);
+        respons_object.body = body;
         respons_object.status = 'ok'
         res.json(respons_object);
     }
