@@ -5,3 +5,4 @@ keys/server_key.js
 dockerfile
 docker-compose.yml
 app.yaml
+*sql
