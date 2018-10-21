@@ -7,8 +7,6 @@ const db = require('../../core/Database');
 const Response = require('../../etc/response_template');
 const Crypto = require('../../core/Crypto');
 const { base64_decode } = require('../../lib/common/helper_functions');
-const { Debugger, Logger } = require('../../etc/logs/logger');
-const keys = require('../../keys/keys');
 const JWT = require('../web_token');
 
 /**

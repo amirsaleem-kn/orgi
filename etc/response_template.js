@@ -3,9 +3,6 @@
  * @description this file contains the logic for sending Response to the client
  */
 
-const helper_functions = require('../lib/common/helper_functions');
-const { base64_decode, base64_encode } = helper_functions;
-
 // an object containing API health check
 
 var api_status = {
