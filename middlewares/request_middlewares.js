@@ -106,8 +106,8 @@ function authenticateRequest (req, callback) {
                 } else {
                     // compare the token passed with what is stored in the database along with its status
                     db.executeQuery({
-                        query: "SELECT status from userTokenStatus where userID = ? and status = ? and token = ?",
-                        queryArray: [message.userId,'valid',userToken],
+                        query: "SELECT status from userTokenStatus where userID = ? and status = ?",
+                        queryArray: [message.userId,'valid'],
                         connection: connection
                     }, function(err, data){
                         if(err) {
