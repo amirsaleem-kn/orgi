@@ -8,6 +8,7 @@ const Response = require('../../etc/response_template');
 const Crypto = require('../../core/Crypto');
 const { base64_decode } = require('../../lib/common/helper_functions');
 const { Debugger, Logger } = require('../../etc/logs/logger');
+const keys = require('../../keys/keys');
 
 /**
  * @description method to sign-in the user and generate an authentication token
@@ -83,9 +84,10 @@ function signIn(req, res) {
 
 function storeToken (connection, userID, token) {
     return new Promise((resolve, reject) => {
+        const authExpiry = Date.now() + keys.authExpiry;
         db.executeQuery({
             query: "INSERT INTO AccessToken(userID, token, expiry) values(?, ?, ?)",
-            queryArray: [userID, token, Date.now()],
+            queryArray: [userID, token, authExpiry],
             connection: connection
         }, function(err, result){
             if(err){

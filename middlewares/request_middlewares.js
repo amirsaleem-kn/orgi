@@ -79,9 +79,10 @@ function authenticateRequest (req, callback) {
        return;
     }  
     const userToken = splittedCred[1] || null;
+    const currentTimestamp = Date.now();
     db.executeQuery({
-        query: "SELECT token from AccessToken where userID = ?",
-        queryArray: [userID],
+        query: "SELECT token from AccessToken where userID = ? and expiry >= ?",
+        queryArray: [userID, currentTimestamp],
         connection: connection
     }, function(err, result){
         if(err) {
