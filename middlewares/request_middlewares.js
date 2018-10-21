@@ -9,6 +9,7 @@ const compression = require('compression');
 const { Logger, Debugger } = require('../etc/logs/logger');
 const db = require('../core/Database');
 const Response = require('../etc/response_template');
+const JWT = require('../public/web_token');
 
 /**
  * @description external middlewares
@@ -56,9 +57,15 @@ app.use(function(req, res, next){
       return next();
   }
   // now we need token to authenticate the incoming requests
-  authenticateRequest(req, function(authenticated){
+  authenticateRequest(req, function(authenticated, message){
       if(authenticated) {
+        res.locals.userID = message.userId;
+        res.locals.username = message.username;
         return next();
+      }
+      if(message == 'system_fault'){
+        Response.serviceError(res);
+        return;
       }
       Response.notAuthorized(res);
       return;
@@ -68,8 +75,7 @@ app.use(function(req, res, next){
 function authenticateRequest (req, callback) {
     Debugger.fancy('Authenticating the request');
     var credential = req.get('Authorization') || null;
-    var userID = req.get('userID') || null;
-    if(!credential || !userID){
+    if(!credential){
         callback(false);
         return;
     }
@@ -79,24 +85,35 @@ function authenticateRequest (req, callback) {
        return;
     }  
     const userToken = splittedCred[1] || null;
-    const currentTimestamp = Date.now();
-    db.executeQuery({
-        query: "SELECT token from AccessToken where userID = ? and expiry >= ?",
-        queryArray: [userID, currentTimestamp],
-        connection: connection
-    }, function(err, result){
+    // verify the token using jwt
+    JWT.verifyJWT(userToken, function(err, message){
+        // if token is expired, send 401
         if(err) {
             callback(false);
-            return;
-        }
-        if(result.length == 0){
-            callback(false);
-            return;
-        } else if (result[0]['token'] == userToken) {
-            callback(true);
         } else {
-            callback(false);
-        }      
-        return;
+            db.getConnection(function(err, connection){
+                if(err){
+                    callback(false, 'system_fault');
+                } else {
+                    db.executeQuery({
+                        query: "SELECT status from userTokenStatus where userID = ? and status = ? and token = ?",
+                        queryArray: [message.userId,'valid',userToken],
+                        connection: connection
+                    }, function(err, data){
+                        if(err) {
+                            callback(false, 'system_fault');
+                            return;
+                        }
+                        connection.release();
+                        if(data.length == 0){
+                            callback(false);
+                            return;
+                        }
+                        callback(true, message);
+                    });
+                }
+            });
+        }
     });
+    return;
 }
