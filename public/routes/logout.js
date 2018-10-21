@@ -22,6 +22,7 @@ function logout (req, res) {
                 Response.serviceError(res);
                 return;
             }
+            connection.release();
             Response.success(res, {
                 success: 'logout successfully'
             });
