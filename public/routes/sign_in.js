@@ -9,6 +9,7 @@ const Crypto = require('../../core/Crypto');
 const { base64_decode } = require('../../lib/common/helper_functions');
 const { Debugger, Logger } = require('../../etc/logs/logger');
 const keys = require('../../keys/keys');
+const JWT = require('../web_token');
 
 /**
  * @description method to sign-in the user and generate an authentication token
@@ -46,6 +47,7 @@ function signIn(req, res) {
         getUser(connection, username).then(userData => {
             // if user does not found, send 403
             if(userData.length == 0) {
+                connection.release();
                 Response.forbidden(res);
                 return;
             }
@@ -53,19 +55,18 @@ function signIn(req, res) {
             const validUser = Crypto.validateHash(password, userData[0]['salt'], userData[0]['hash']);
             // if hash matches
             if(validUser) {
-                // generate a new token
-                const token = Crypto.generateToken(req.get('User-Agent'));
-                // store token in database
-                storeToken(connection, userData[0]['userID'], token).then(data => {
+                // create a new jwt token
+                const token = JWT.generateJWT(userData[0]['userID'], userData[0]['username']);
+                storeTokenStatus(connection, userData[0]['userID'], token).then(data => {
                     connection.release();
                     Response.success(res, {
-                        token: token                        
+                        token: token
                     });
                 }).catch(err => {
-                    Debugger.log(err);
-                    Response.serviceError(res);
+                    Response.serviceError(res); 
                 });
             } else {
+                connection.release();
                 Response.forbidden(res);
                 return;
             }
@@ -75,31 +76,33 @@ function signIn(req, res) {
     });
 }
 
-/**
- * @description method to store token in AccessToken table against a userID
- * @param {type:object} connection an active mysql connection
- * @param {type:string} userID id of the user
- * @param {type:hash} token a token hash 
- */
-
-function storeToken (connection, userID, token) {
+function storeTokenStatus (connection, userId, token) {
     return new Promise((resolve, reject) => {
-        const authExpiry = Date.now() + keys.authExpiry;
         db.executeQuery({
-            query: "INSERT INTO AccessToken(userID, token, expiry) values(?, ?, ?)",
-            queryArray: [userID, token, authExpiry],
+            query: "Update userTokenStatus set status = ? where userId = ?",
+            queryArray: ['revoked', userId],
             connection: connection
         }, function(err, result){
-            if(err){
+            if(err) {
                 reject(err);
                 return;
             }
-            resolve(result);
+            db.executeQuery({
+                query: "INSERT INTO userTokenStatus (userId, status, token) values (?, ?, ?)",
+                queryArray: [userId, 'valid', token],
+                connection: connection
+            }, function(err, insertResult) {
+                if(err) {
+                    reject(err);
+                    return;
+                }
+                resolve();
+            });
         });
-    });   
+    });
 }
-
 /**
+
  * @description method to get user details from username
  * @param {type:object} connection an active mysql connection
  * @param {type:string} username username of the user 
