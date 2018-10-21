@@ -74,17 +74,26 @@ function signIn(req, res) {
     });
 }
 
+/**
+ * @description method to store newly generated token in databased against a userID and revoke the old tokens
+ * @param {type:object} connection an active mysql connection
+ * @param {type:userId} userId id of the user
+ * @param {type:token} token authentication token
+ */
+
 function storeTokenStatus (connection, userId, token) {
     return new Promise((resolve, reject) => {
+        // revoke all valid tokens for this user
         db.executeQuery({
-            query: "Update userTokenStatus set status = ? where userId = ?",
-            queryArray: ['revoked', userId],
+            query: "Update userTokenStatus set status = ? where userId = ? and status = ?",
+            queryArray: ['revoked', userId, 'valid'],
             connection: connection
         }, function(err, result){
             if(err) {
                 reject(err);
                 return;
             }
+            // insert a new token
             db.executeQuery({
                 query: "INSERT INTO userTokenStatus (userId, status, token) values (?, ?, ?)",
                 queryArray: [userId, 'valid', token],

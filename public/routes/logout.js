@@ -6,6 +6,11 @@
 const db = require('../../core/Database');
 const Response = require('../../etc/response_template');
 
+/**
+ * @description method to logout the user from application, this method revokes all valid tokens of the user
+ * @param {type:object} res http response object
+ */
+
 function logout (req, res) {
     const userID = res.locals.userID;
     db.getConnection(function(err, connection){
@@ -14,8 +19,8 @@ function logout (req, res) {
             return;
         }
         db.executeQuery({
-            query: "Update userTokenStatus set status = ? where userID = ?",
-            queryArray: ['revoked', userID],
+            query: "Update userTokenStatus set status = ? where userID = ? and status = ?",
+            queryArray: ['revoked', userID, 'valid'],
             connection: connection
         }, function(err, data){
             if(err) {

@@ -72,6 +72,12 @@ app.use(function(req, res, next){
   });  
 });
 
+/**
+ * @description method to authenticate the incoming requests using json web token
+ * @param {type:object} req an http request object
+ * @param {type:function} callback callback function to be executed on success or failure
+ */
+
 function authenticateRequest (req, callback) {
     Debugger.fancy('Authenticating the request');
     var credential = req.get('Authorization') || null;
@@ -86,15 +92,17 @@ function authenticateRequest (req, callback) {
     }  
     const userToken = splittedCred[1] || null;
     // verify the token using jwt
-    JWT.verifyJWT(userToken, function(err, message){
+    JWT.verify(userToken, function(err, message){
         // if token is expired, send 401
         if(err) {
             callback(false);
         } else {
+            // get an active mysql connection
             db.getConnection(function(err, connection){
                 if(err){
                     callback(false, 'system_fault');
                 } else {
+                    // compare the token passed with what is stored in the database along with its status
                     db.executeQuery({
                         query: "SELECT status from userTokenStatus where userID = ? and status = ? and token = ?",
                         queryArray: [message.userId,'valid',userToken],
@@ -104,11 +112,14 @@ function authenticateRequest (req, callback) {
                             callback(false, 'system_fault');
                             return;
                         }
+                        // release the connection
                         connection.release();
+                        // if token not found in database
                         if(data.length == 0){
                             callback(false);
                             return;
                         }
+                        // authentication has been successful
                         callback(true, message);
                     });
                 }

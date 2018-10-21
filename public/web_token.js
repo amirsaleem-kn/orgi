@@ -20,7 +20,7 @@ class JWT {
         };
     }
 
-    static verifyJWT (token, callback) {
+    static verify (token, callback) {
         jwt.verify(token, server_key, function(err, message){
             callback(err, message);
         });
