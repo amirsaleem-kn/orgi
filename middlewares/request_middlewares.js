@@ -66,6 +66,8 @@ app.use(function(req, res, next){
       if(message == 'system_fault'){
         Response.serviceError(res);
         return;
+      } else if (message == 'forbidden') {
+          Response.forbidden(res);
       }
       Response.notAuthorized(res);
       return;
@@ -82,12 +84,12 @@ function authenticateRequest (req, callback) {
     Debugger.fancy('Authenticating the request');
     var credential = req.get('Authorization') || null;
     if(!credential){
-        callback(false);
+        callback(false, 'forbidden');
         return;
     }
     var splittedCred = credential.split(' ');
     if(splittedCred[0] != 'Bearer'){
-       callback(false);
+       callback(false, 'forbidden');
        return;
     }  
     const userToken = splittedCred[1] || null;
