@@ -4,7 +4,6 @@ const signIn = require('./sign_in');
 const logout = require('./logout');
 
 app.get('/', (req, res) => {
-    console.log(res.locals);
     Response.success(res, {
         system: '5 GB',
         cpu: '78%',

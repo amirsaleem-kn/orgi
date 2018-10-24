@@ -21,7 +21,7 @@ function executeQuery () {
     });
 }
 
-//executeQuery();
+executeQuery();
 
 app.listen(PORT, () => {
     Debugger.fancy(`Server listening to port: ${PORT}`);
