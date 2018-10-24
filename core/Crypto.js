@@ -5,7 +5,8 @@
 
 const crypto = require('crypto');
 const server_key = require('../keys/server_key');
-const algorithm = 'aes-256-ctr';
+const keys = require('../keys/keys');
+const algorithm = keys.crypto_vars.algorithm;
 
 /**
  * @description top level class to use cryptographic functions

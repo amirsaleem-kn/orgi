@@ -7,16 +7,20 @@ const Response = require('../etc/response_template');
  * @description mysql connection pool configuration
  */
 
-const pool = mysql.createPool({
-                user: keys.mysql.user,
-                password: keys.mysql.password,
-                database: keys.mysql.database,
-                host: keys.mysql.host,
-                connectionTimeout: 2 * 60 * 1000,
-                timeout: 120000,
-                multipleStatements: true,
-                connectionLimit: 20
-            });
+const { mysql_conf } = keys
+
+const poolConfig = {
+    user: mysql_conf.user,
+    password: mysql_conf.password,
+    database: mysql_conf.database,
+    host: mysql_conf.host,
+    connectionTimeout: mysql_conf.meta.connectionTimeout,
+    timeout: mysql_conf.meta.timeout,
+    multipleStatements: mysql_conf.meta.multipleStatements,
+    connectionLimit: mysql_conf.meta.connectionLimit
+};
+
+const pool = mysql.createPool(poolConfig);
 
 /**
  * @description top level database class

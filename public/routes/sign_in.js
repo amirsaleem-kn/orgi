@@ -108,8 +108,8 @@ function storeTokenStatus (connection, userId, token) {
         });
     });
 }
-/**
 
+/**
  * @description method to get user details from username
  * @param {type:object} connection an active mysql connection
  * @param {type:string} username username of the user 

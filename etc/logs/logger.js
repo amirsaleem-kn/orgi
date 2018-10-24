@@ -48,7 +48,12 @@ class Debugger {
     }
     static trace(message) {
         if(environment != 'production') {
-            console.trace(message);
+            try {
+                console.trace(message);
+            } catch (e) {
+                console.log(chalk.red('Error while calling trace'));
+                console.log(e);
+            }
         }
     }
 
@@ -94,7 +99,11 @@ class Logger {
         }
     }
     static trace(message) {
-        console.trace(message);
+        try {
+            console.trace(message);
+        } catch(e) {
+            console.log(e);
+        }
     }
 }
 
