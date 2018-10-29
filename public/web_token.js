@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
-const keys = require('../keys/keys');
+const config = require('../keys/keys');
 const server_key = require('../keys/server_key');
 
 class JWT {
     static generateJWT(userId, username) {
-        const authExpiry = Date.now() + keys.authExpiry;
+        const authExpiry = Date.now() + config.authExpiry;
         return jwt.sign({
             id: userId,
             username: username,

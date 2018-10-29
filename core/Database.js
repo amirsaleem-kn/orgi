@@ -1,13 +1,13 @@
 const mysql = require('mysql');
 const { Logger, Debugger } = require('../etc/logs/logger');
-const keys = require('../keys/keys');
+const config = require('../keys/config');
 
 const Response = require('../etc/response_template');
 /**
  * @description mysql connection pool configuration
  */
 
-const { mysql_conf } = keys
+const { mysql_conf } = config;
 
 const poolConfig = {
     user: mysql_conf.user,
