@@ -1,4 +1,4 @@
-const keys = require('./keys');
+const keys = require('../keys/keys');
 const app_configuration = {
     mysql_conf: {
         user: 'root',

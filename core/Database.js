@@ -1,6 +1,6 @@
 const mysql = require('mysql');
 const { Logger, Debugger } = require('../etc/logs/logger');
-const config = require('../keys/config');
+const config = require('../settings/app_settings');
 
 const Response = require('../etc/response_template');
 /**

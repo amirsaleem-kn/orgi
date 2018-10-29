@@ -5,7 +5,7 @@
 
 const crypto = require('crypto');
 const server_key = require('../keys/server_key');
-const config = require('../keys/config');
+const config = require('../settings/app_settings');
 const algorithm = config.crypto_vars.algorithm;
 
 /**

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const config = require('../keys/keys');
+const config = require('../settings/app_settings');
 const server_key = require('../keys/server_key');
 
 class JWT {
